@@ -1,32 +1,22 @@
 extends Node2D
 
-var player_square: RectangleShape2D
-var speed: int = 200
-var window_bounds: Rect2
-
-func _ready():
-    player_square = $PlayerSquare
+var speed = 200
+var window_bounds = Rect2(Vector2.ZERO, Vector2(800, 600))
 
 func _process(delta):
-    var direction = Vector2.ZERO
+    var input_vector = Vector2.ZERO
     
     if Input.is_action_pressed("ui_right"):
-        direction.x += 1
+        input_vector.x += 1
     if Input.is_action_pressed("ui_left"):
-        direction.x -= 1
+        input_vector.x -= 1
     if Input.is_action_pressed("ui_down"):
-        direction.y += 1
+        input_vector.y += 1
     if Input.is_action_pressed("ui_up"):
-        direction.y -= 1
-
-    direction = direction.normalized()
-    var movement = direction * speed * delta
-
-    var new_position = position + movement
-    update_window_bounds()
-
-    if window_bounds.has_point(new_position):
-        position = new_position
-
-func update_window_bounds():
-    window_bounds = Rect2(Vector2.ZERO, get_viewport().get_size())
+        input_vector.y -= 1
+    
+    input_vector = input_vector.normalized()
+    position += input_vector * speed * delta
+    
+    position.x = clamp(position.x, window_bounds.position.x, window_bounds.position.x + window_bounds.size.x)
+    position.y = clamp(position.y, window_bounds.position.y, window_bounds.position.y + window_bounds.size.y)
