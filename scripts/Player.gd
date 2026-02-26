@@ -1,22 +1,24 @@
 extends Node2D
 
 var speed = 200
-var window_bounds = Rect2(Vector2.ZERO, Vector2(800, 600))
+
+func _ready():
+    pass
 
 func _process(delta):
-    var input_vector = Vector2.ZERO
-    
+    var velocity = Vector2.ZERO
+
     if Input.is_action_pressed("ui_right"):
-        input_vector.x += 1
+        velocity.x += 1
     if Input.is_action_pressed("ui_left"):
-        input_vector.x -= 1
+        velocity.x -= 1
     if Input.is_action_pressed("ui_down"):
-        input_vector.y += 1
+        velocity.y += 1
     if Input.is_action_pressed("ui_up"):
-        input_vector.y -= 1
-    
-    input_vector = input_vector.normalized()
-    position += input_vector * speed * delta
-    
-    position.x = clamp(position.x, window_bounds.position.x, window_bounds.position.x + window_bounds.size.x)
-    position.y = clamp(position.y, window_bounds.position.y, window_bounds.position.y + window_bounds.size.y)
+        velocity.y -= 1
+
+    velocity = velocity.normalized() * speed * delta
+
+    position += velocity
+    position.x = clamp(position.x, 0, get_viewport().size.x - rect_size.x)
+    position.y = clamp(position.y, 0, get_viewport().size.y - rect_size.y)
