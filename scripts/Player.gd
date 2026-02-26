@@ -1,9 +1,12 @@
+```gdscript
 extends Node2D
 
 var speed = 200
+var rect_size = Vector2(50, 50)  # Assuming square is 50x50 pixels
 
 func _ready():
-    pass
+    # Set the size of the Node2D (if it's a square) for boundary calculations
+    self.set_size(rect_size)
 
 func _process(delta):
     var velocity = Vector2.ZERO
@@ -19,6 +22,8 @@ func _process(delta):
 
     velocity = velocity.normalized() * speed * delta
 
+    # Update position while clamping to the viewport bounds
     position += velocity
     position.x = clamp(position.x, 0, get_viewport().size.x - rect_size.x)
     position.y = clamp(position.y, 0, get_viewport().size.y - rect_size.y)
+```
