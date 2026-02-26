@@ -1,10 +1,11 @@
-```gdscript
 extends Node2D
 
 var speed = 200
 var rect_size = Vector2(50, 50)  # Assuming square is 50x50 pixels
 var default_color = Color(1, 1, 1)  # White
 var alternate_color = Color(1, 0, 0)  # Red
+var changing_color = false
+var color_transition_speed = 2.0  # Speed of color transition
 
 func _ready():
     # Set the size of the Node2D (if it's a square) for boundary calculations
@@ -29,8 +30,13 @@ func _process(delta):
     position += velocity
     position.x = clamp(position.x, 0, get_viewport().size.x - rect_size.x)
     position.y = clamp(position.y, 0, get_viewport().size.y - rect_size.y)
-    
+
     # Change color when spacebar is pressed
     if Input.is_action_just_pressed("ui_select"):  # "ui_select" is usually mapped to the spacebar
-        self.modulate = alternate_color if self.modulate == default_color else default_color
-```
+        changing_color = true
+        target_color = alternate_color if self.modulate == default_color else default_color
+
+    if changing_color:
+        self.modulate = self.modulate.linear_interpolate(target_color, color_transition_speed * delta)
+        if self.modulate == target_color:
+            changing_color = false
